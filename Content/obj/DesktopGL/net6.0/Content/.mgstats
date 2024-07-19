@@ -1,0 +1,6 @@
+Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Celebrate.png","C:/Users/Calvin/Documents/Alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Celebrate.xnb","TextureProcessor","Texture2DContent",37037,180309,0.0964467
+"C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Die.png","C:/Users/Calvin/Documents/Alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Die.xnb","TextureProcessor","Texture2DContent",35621,180309,0.0765448
+"C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Idle.png","C:/Users/Calvin/Documents/Alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Idle.xnb","TextureProcessor","Texture2DContent",6776,16469,0.0021706
+"C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Jump.png","C:/Users/Calvin/Documents/Alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Jump.xnb","TextureProcessor","Texture2DContent",35302,180309,0.0060282
+"C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Run.png","C:/Users/Calvin/Documents/Alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Run.xnb","TextureProcessor","Texture2DContent",37247,163925,0.0055797

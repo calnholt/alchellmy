@@ -1,0 +1,22 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+    {
+      "label": "dotnet: build C:\\Users\\Calvin\\Documents\\Alchellmy\\Alchellmy.csproj",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/Alchellmy.csproj"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "type": "dotnet",
+      "task": "build",
+      "group": "build",
+      "problemMatcher": [],
+      "label": "dotnet: build"
+    }
+  ]
+}
