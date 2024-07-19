@@ -37,7 +37,7 @@ public class Game1 : Game
 	{
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
 		ScalePresentationArea();
-    _player = new Player(Services, new Vector2(400, 400));
+    _player = new Player(Services, new Vector2(400, 480));
 	}
 
 	// Work out how much we need to scale our graphics to fill the screen
