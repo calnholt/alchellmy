@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -60,6 +62,8 @@ namespace Platformer2D
     private const float GravityAcceleration = 2400.0f;
     private const float MaxFallSpeed = 550.0f;
     private const float JumpControlPower = 0.14f;
+    private const float DashDuration = .15f;
+    private const float DashVelocity = 200.0f;
 
     // Input configuration
     private const float MoveStickScale = 1.0f;
@@ -83,6 +87,10 @@ namespace Platformer2D
     private bool isJumping;
     private bool wasJumping;
     private float jumpTime;
+
+    private bool isDashing = false;
+    private float dashTime = 1.0f;
+    private bool isFacingRight = true;
 
     private Rectangle localBounds;
     /// <summary>
@@ -187,25 +195,33 @@ namespace Platformer2D
         KeyboardState keyboardState,
         GamePadState gamePadState)
     {
-      // Get analog horizontal movement.
-      movement = gamePadState.ThumbSticks.Left.X * MoveStickScale;
+      isDashing = 
+        gamePadState.IsButtonDown(Buttons.RightShoulder) ||
+        keyboardState.IsKeyDown(Keys.J) || 
+        dashTime > 0.0f;
 
-      // Ignore small movements to prevent running in place.
-      if (Math.Abs(movement) < 0.5f)
-        movement = 0.0f;
+      if (!isDashing) {
+        // Get analog horizontal movement.
+        movement = gamePadState.ThumbSticks.Left.X * MoveStickScale;
 
-      // If any digital horizontal movement input is found, override the analog movement.
-      if (gamePadState.IsButtonDown(Buttons.DPadLeft) ||
-          keyboardState.IsKeyDown(Keys.Left) ||
-          keyboardState.IsKeyDown(Keys.A))
-      {
-        movement = -1.0f;
-      }
-      else if (gamePadState.IsButtonDown(Buttons.DPadRight) ||
-               keyboardState.IsKeyDown(Keys.Right) ||
-               keyboardState.IsKeyDown(Keys.D))
-      {
-        movement = 1.0f;
+        // Ignore small movements to prevent running in place.
+        if (Math.Abs(movement) < 0.5f)
+          movement = 0.0f;
+        // If any digital horizontal movement input is found, override the analog movement.
+        if (gamePadState.IsButtonDown(Buttons.DPadLeft) ||
+            keyboardState.IsKeyDown(Keys.Left) ||
+            keyboardState.IsKeyDown(Keys.A))
+        {
+          movement = -1.0f;
+          isFacingRight = false;
+        }
+        else if (gamePadState.IsButtonDown(Buttons.DPadRight) ||
+                keyboardState.IsKeyDown(Keys.Right) ||
+                keyboardState.IsKeyDown(Keys.D))
+        {
+          movement = 1.0f;
+          isFacingRight = true;
+        }
       }
 
       // Check if the player wants to jump.
@@ -214,6 +230,7 @@ namespace Platformer2D
           keyboardState.IsKeyDown(Keys.Space) ||
           keyboardState.IsKeyDown(Keys.Up) ||
           keyboardState.IsKeyDown(Keys.W);
+
     }
 
     /// <summary>
@@ -228,20 +245,30 @@ namespace Platformer2D
       // Base velocity is a combination of horizontal movement control and
       // acceleration downward due to gravity.
       velocity.X += movement * MoveAcceleration * elapsed;
-      velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
-      velocity.Y = DoJump(velocity.Y, gameTime);
+      if (isDashing) 
+      {
+        velocity.X = DoDash(gameTime);
+      }
+      else 
+      {
+        velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
+        velocity.Y = DoJump(velocity.Y, gameTime);
 
-      // Apply pseudo-drag horizontally.
-      if (IsOnGround)
-        velocity.X *= GroundDragFactor;
-      else
-        velocity.X *= AirDragFactor;
+        // Apply pseudo-drag horizontally.
+        if (IsOnGround)
+          velocity.X *= GroundDragFactor;
+        else
+          velocity.X *= AirDragFactor;
 
-      // Prevent the player from running faster than his top speed.            
-      velocity.X = MathHelper.Clamp(velocity.X, -MaxMoveSpeed, MaxMoveSpeed);
+        // Prevent the player from running faster than his top speed.            
+        velocity.X = MathHelper.Clamp(velocity.X, -MaxMoveSpeed, MaxMoveSpeed);
+      }
 
       // Apply velocity.
-      Position += velocity * elapsed;
+      position.X += velocity.X * elapsed;
+      if (!isDashing) {
+        position.Y += velocity.Y * elapsed;
+      }
       Position = new Vector2((float)Math.Round(Position.X), (float)Math.Round(Position.Y));
 
       // If the player is now colliding with the level, separate them.
@@ -280,7 +307,7 @@ namespace Platformer2D
     private float DoJump(float velocityY, GameTime gameTime)
     {
       // If the player wants to jump
-      if (isJumping)
+      if (isJumping && !isDashing)
       {
         // Begin or continue a jump
         if ((!wasJumping && IsOnGround) || jumpTime > 0.0f)
@@ -313,6 +340,19 @@ namespace Platformer2D
       wasJumping = isJumping;
 
       return velocityY;
+    }
+
+    private float DoDash(GameTime gameTime) {
+      if (!isDashing) return velocity.X;
+
+      dashTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+      if (dashTime >= DashDuration) 
+      {
+        isDashing = false;
+        dashTime = 0.0f;
+        return velocity.X;
+      }
+      return velocity.X + DashVelocity * (isFacingRight ? 1 : -1);
     }
 
     /// <summary>
@@ -369,6 +409,7 @@ namespace Platformer2D
               }
               else if (collision == TileCollision.Impassable)
               {
+                isDashing = false;
                 // Resolve the collision along the X axis.
                 Position = new Vector2(Position.X + depth.X, Position.Y);
 
