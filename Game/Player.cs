@@ -229,7 +229,6 @@ namespace Platformer2D
       // acceleration downward due to gravity.
       velocity.X += movement * MoveAcceleration * elapsed;
       velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
-
       velocity.Y = DoJump(velocity.Y, gameTime);
 
       // Apply pseudo-drag horizontally.
@@ -252,8 +251,13 @@ namespace Platformer2D
       if (Position.X == previousPosition.X)
         velocity.X = 0;
 
-      if (Position.Y == previousPosition.Y)
+      if (Position.Y == previousPosition.Y) 
+      {
         velocity.Y = 0;
+        // cancel jump if overhead collision
+        isJumping = false;
+        jumpTime = 0.0f;
+      }
     }
 
     /// <summary>

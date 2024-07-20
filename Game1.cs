@@ -1,4 +1,5 @@
-﻿﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -132,9 +133,9 @@ public class Game1 : Game
         // get all of our input states
         _keyboardState = Keyboard.GetState();
         _gamePadState = GamePad.GetState(PlayerIndex.One);
-				var currentMenuBtn = MenuUtil.GetMenuButtonValue(_keyboardState, _gamePadState);
-				var isMenuButtonDown = MenuUtil.IsMenuButtonDown(currentMenuBtn);
-				var isMenuButtonUp = MenuUtil.IsMenuButtonUp(currentMenuBtn);
+				int currentMenuBtn = MenuUtil.GetMenuButtonValue(_keyboardState, _gamePadState);
+				bool isMenuButtonDown = MenuUtil.IsMenuButtonDown(currentMenuBtn);
+				bool isMenuButtonUp = MenuUtil.IsMenuButtonUp(currentMenuBtn);
 
  				// Exit the game
 				if (_keyboardState.IsKeyDown(Keys.Escape))
