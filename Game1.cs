@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -15,10 +17,13 @@ public class Game1 : Game
     private int _backBufferWidth, _backBufferHeight;
     private GamePadState _gamePadState;
     private KeyboardState _keyboardState;
+    private MouseState _mouseState;
     private Player _player;
     private Level _level;
     private GameState _currentGameState;
     private SpriteFont _font;
+    private List<MenuButton> _menuButtons;
+    private Texture2D _menuButtonTexture;
 
     public Game1()
     {
@@ -42,7 +47,21 @@ public class Game1 : Game
         ScalePresentationArea();
         _player = new Player(Services, new Vector2(400, 480));
         _level = new Level(Services, "Content/Levels/Level1.txt");
+
+        LoadGUI();
+    }
+
+    protected void LoadGUI() 
+    {
         _font = Content.Load<SpriteFont>("Sprites/GlobalFont");
+        _menuButtonTexture = new Texture2D(GraphicsDevice, 1, 1);
+        _menuButtonTexture.SetData(new[] { Color.Gray });
+        _menuButtons = new List<MenuButton>
+        {
+            new MenuButton(_menuButtonTexture, _font, "Start", new Vector2(350, 200), Color.DarkGray, Keys.Enter, () => _currentGameState = GameState.Playing, GUIConstants.MENU_START_BUTTON, GUIConstants.MENU_START_BUTTON),
+            new MenuButton(_menuButtonTexture, _font, "Resume", new Vector2(350, 200), Color.DarkGray, Keys.P, () => _currentGameState = GameState.Playing, GUIConstants.MENU_RESUME_BUTTON, GUIConstants.MENU_RESUME_BUTTON),
+            new MenuButton(_menuButtonTexture, _font, "Exit", new Vector2(350, 300), Color.DarkGray, Keys.Escape, () => Exit(),  GUIConstants.MENU_EXIT_BUTTON, GUIConstants.MENU_EXIT_BUTTON)
+        };
     }
 
     // Work out how much we need to scale our graphics to fill the screen
@@ -64,27 +83,45 @@ public class Game1 : Game
             case GameState.StartMenu:
                 // Update logic for the start menu (if any)
                 HandleInput(gameTime);
+      
+                //GUI Code will refactor out.
+                foreach (var button in _menuButtons)
+                {
+                    button.Update(gameTime, Mouse.GetState(), Keyboard.GetState());
+                }
+
                 base.Update(gameTime);
+
                 break;
 
             case GameState.Playing:
-
-                // Confirm the screen has not been resized by the user
+                // Refactor to GUI code? Confirm the screen has not been resized by the user
                 if (_backBufferHeight != GraphicsDevice.PresentationParameters.BackBufferHeight ||
                         _backBufferWidth != GraphicsDevice.PresentationParameters.BackBufferWidth)
                 {
                     ScalePresentationArea();
                 }
 
+                // handle input after scaling the window and gui code?
                 HandleInput(gameTime);
+
                 _player.Update(gameTime, Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), _level);
+
                 base.Update(gameTime);
+
                 break;
 
             case GameState.Paused:
-                // Update logic for the pause menu (if any)
                 HandleInput(gameTime);
+
+                //GUI Code will refactor out.
+                foreach (var button in _menuButtons)
+                {
+                    button.Update(gameTime, Mouse.GetState(), Keyboard.GetState());
+                }
+
                 base.Update(gameTime);
+                
                 break;
         }
     }
@@ -94,6 +131,7 @@ public class Game1 : Game
         // get all of our input states
         _keyboardState = Keyboard.GetState();
         _gamePadState = GamePad.GetState(PlayerIndex.One);
+        _mouseState = Mouse.GetState();
 
         switch (_currentGameState)
         {
@@ -118,12 +156,11 @@ public class Game1 : Game
                 }
                 else if (_keyboardState.IsKeyDown(Keys.Escape))
                 {
-                    Exit(); // Exit the game
+                    Exit();
                 }
                 break;
         }
     }
-
 
     protected override void Draw(GameTime gameTime)
     {
@@ -155,16 +192,27 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.Black);
 
-        string message = "Press Enter or Start to Play!";
-        Vector2 size = _font.MeasureString(message);
-        _spriteBatch.DrawString(_font, message, _baseScreenSize / 2 - size / 2, Color.White);
+        var buttons = _menuButtons
+            .Where(btn => btn.Code != GUIConstants.MENU_RESUME_BUTTON)
+            .ToList();
+
+        foreach (var button in buttons)
+        {
+            button.Draw(_spriteBatch);
+        }
     }
 
     protected void DrawPauseMenu(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
-        string message = "Game Paused\nPress Enter or Start to Resume";
-        Vector2 size = _font.MeasureString(message);
-        _spriteBatch.DrawString(_font, message, _baseScreenSize / 2 - size / 2, Color.White);
+
+        var buttons = _menuButtons
+            .Where(btn => btn.Code != GUIConstants.MENU_START_BUTTON)
+            .ToList();
+
+        foreach (var button in buttons)
+        {
+            button.Draw(_spriteBatch);
+        }
     }
 }
