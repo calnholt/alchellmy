@@ -31,6 +31,7 @@ namespace Platformer2D
 
             Vector2 textSize = _font.MeasureString(text);
             _bounds = new Rectangle((int)_position.X, (int)_position.Y, (int)textSize.X + 20, (int)textSize.Y + 20);
+
             Name = name;
             Code = code;
         }
