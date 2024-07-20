@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -24,6 +24,7 @@ public class Game1 : Game
     private SpriteFont _font;
     private List<MenuButton> _menuButtons;
     private Texture2D _menuButtonTexture;
+		private int _previousMenuBtn = (int)Buttons.None;
 
     public Game1()
     {
@@ -131,36 +132,48 @@ public class Game1 : Game
         // get all of our input states
         _keyboardState = Keyboard.GetState();
         _gamePadState = GamePad.GetState(PlayerIndex.One);
-        _mouseState = Mouse.GetState();
+				var currentMenuBtn = MenuUtil.GetMenuButtonValue(_keyboardState, _gamePadState);
+				var isMenuButtonDown = MenuUtil.IsMenuButtonDown(currentMenuBtn);
+				var isMenuButtonUp = MenuUtil.IsMenuButtonUp(currentMenuBtn);
 
-        switch (_currentGameState)
+ 				// Exit the game
+				if (_keyboardState.IsKeyDown(Keys.Escape))
+				{
+					Exit();
+				}
+
+				if (isMenuButtonDown && _previousMenuBtn != currentMenuBtn) 
+				{
+					HandleMenuToggle();
+					_previousMenuBtn = currentMenuBtn;
+				}
+				else if (isMenuButtonUp) 
+				{
+					_previousMenuBtn = (int)Buttons.None;
+				}
+    }
+
+		private void HandleMenuToggle() {
+				switch (_currentGameState)
         {
             case GameState.StartMenu:
-                if (_keyboardState.IsKeyDown(Keys.Enter) || _gamePadState.IsButtonDown(Buttons.Start))
                 {
                     _currentGameState = GameState.Playing;
+										break;
                 }
-                break;
-
             case GameState.Playing:
-                if (_keyboardState.IsKeyDown(Keys.P) || _gamePadState.IsButtonDown(Buttons.Start))
                 {
                     _currentGameState = GameState.Paused;
+										break;
                 }
-                break;
 
             case GameState.Paused:
-                if (_keyboardState.IsKeyDown(Keys.Enter) || _gamePadState.IsButtonDown(Buttons.Start))
-                {
-                    _currentGameState = GameState.Playing;
-                }
-                else if (_keyboardState.IsKeyDown(Keys.Escape))
-                {
-                    Exit();
-                }
-                break;
+								{
+										_currentGameState = GameState.Playing;
+										break;
+								}
         }
-    }
+		}
 
     protected override void Draw(GameTime gameTime)
     {
