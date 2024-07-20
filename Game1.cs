@@ -142,8 +142,6 @@ public class Game1 : Game
                 break;
 
             case GameState.Paused:
-                _level.Draw(gameTime, _spriteBatch);
-                _player.Draw(gameTime, _spriteBatch);
                 DrawPauseMenu(gameTime);
                 break;
         }
