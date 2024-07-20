@@ -98,21 +98,21 @@ public class Game1 : Game
         switch (_currentGameState)
         {
             case GameState.StartMenu:
-                if (_keyboardState.IsKeyDown(Keys.Enter))
+                if (_keyboardState.IsKeyDown(Keys.Enter) || _gamePadState.IsButtonDown(Buttons.Start))
                 {
                     _currentGameState = GameState.Playing;
                 }
                 break;
 
             case GameState.Playing:
-                if (_keyboardState.IsKeyDown(Keys.P))
+                if (_keyboardState.IsKeyDown(Keys.P) || _gamePadState.IsButtonDown(Buttons.Start))
                 {
                     _currentGameState = GameState.Paused;
                 }
                 break;
 
             case GameState.Paused:
-                if (_keyboardState.IsKeyDown(Keys.Enter))
+                if (_keyboardState.IsKeyDown(Keys.Enter) || _gamePadState.IsButtonDown(Buttons.Start))
                 {
                     _currentGameState = GameState.Playing;
                 }
@@ -157,7 +157,7 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(Color.Black);
 
-        string message = "Press Enter to Start";
+        string message = "Press Enter or Start to Play!";
         Vector2 size = _font.MeasureString(message);
         _spriteBatch.DrawString(_font, message, _baseScreenSize / 2 - size / 2, Color.White);
     }
@@ -165,7 +165,7 @@ public class Game1 : Game
     protected void DrawPauseMenu(GameTime gameTime)
     {
         GraphicsDevice.Clear(Color.Black);
-        string message = "Game Paused\nPress Enter to Resume\nPress Escape to Exit";
+        string message = "Game Paused\nPress Enter or Start to Resume";
         Vector2 size = _font.MeasureString(message);
         _spriteBatch.DrawString(_font, message, _baseScreenSize / 2 - size / 2, Color.White);
     }
