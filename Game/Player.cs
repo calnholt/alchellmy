@@ -49,15 +49,15 @@ namespace Platformer2D
     Vector2 velocity;
 
     // Constants for controlling horizontal movement
-    private const float MoveAcceleration = 13000.0f;
-    private const float MaxMoveSpeed = 1750.0f;
+    private const float MoveAcceleration = 30000.0f;
+    private const float MaxMoveSpeed = 100000.0f;
     private const float GroundDragFactor = 0.48f;
-    private const float AirDragFactor = 0.58f;
+    private const float AirDragFactor = 0.48f;
 
     // Constants for controlling vertical movement
-    private const float MaxJumpTime = 0.35f;
-    private const float JumpLaunchVelocity = -3500.0f;
-    private const float GravityAcceleration = 3400.0f;
+    private const float MaxJumpTime = 0.7f;
+    private const float JumpLaunchVelocity = -2500.0f;
+    private const float GravityAcceleration = 2400.0f;
     private const float MaxFallSpeed = 550.0f;
     private const float JumpControlPower = 0.14f;
 
@@ -281,10 +281,11 @@ namespace Platformer2D
         // Begin or continue a jump
         if ((!wasJumping && IsOnGround) || jumpTime > 0.0f)
         {
-          if (jumpTime == 0.0f)
+          if (jumpTime == 0.0f) 
+          {
             // jumpSound.Play();
-
-            jumpTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+          }
+          jumpTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
           sprite.PlayAnimation(jumpAnimation);
         }
 
