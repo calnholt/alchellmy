@@ -17,6 +17,7 @@ public class Game1 : Game
 	private GamePadState _gamePadState;
 	private KeyboardState _keyboardState;
 	private Player _player;
+	    private Level _level;
 
 	public Game1()
 	{
@@ -38,6 +39,7 @@ public class Game1 : Game
 		_spriteBatch = new SpriteBatch(GraphicsDevice);
 		ScalePresentationArea();
     _player = new Player(Services, new Vector2(400, 480));
+      _level = new Level(Services, "Content/Levels/Level1.txt");	
 	}
 
 	// Work out how much we need to scale our graphics to fill the screen
@@ -61,7 +63,7 @@ public class Game1 : Game
 			ScalePresentationArea();
 		}
 		HandleInput(gameTime);
-		_player.Update(gameTime, Keyboard.GetState(), GamePad.GetState(PlayerIndex.One));
+		_player.Update(gameTime, Keyboard.GetState(), GamePad.GetState(PlayerIndex.One), _level);
 		base.Update(gameTime);
 	}
 
@@ -77,6 +79,7 @@ public class Game1 : Game
 	{
 		_graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
 		_spriteBatch.Begin(SpriteSortMode.Immediate, null, null, null, null, null, _globalTransformation);
+		_level.Draw(gameTime, _spriteBatch);
 		_player.Draw(gameTime, _spriteBatch);
 		_spriteBatch.End();
 		base.Draw(gameTime);

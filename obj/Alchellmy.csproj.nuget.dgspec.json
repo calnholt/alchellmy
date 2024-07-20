@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Calvin\\Documents\\Alchellmy\\Alchellmy.csproj": {}
+    "c:\\Users\\micha\\projects\\alchellmy\\Alchellmy.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Calvin\\Documents\\Alchellmy\\Alchellmy.csproj": {
+    "c:\\Users\\micha\\projects\\alchellmy\\Alchellmy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Calvin\\Documents\\Alchellmy\\Alchellmy.csproj",
+        "projectUniqueName": "c:\\Users\\micha\\projects\\alchellmy\\Alchellmy.csproj",
         "projectName": "Alchellmy",
-        "projectPath": "C:\\Users\\Calvin\\Documents\\Alchellmy\\Alchellmy.csproj",
-        "packagesPath": "C:\\Users\\Calvin\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Calvin\\Documents\\Alchellmy\\obj\\",
+        "projectPath": "c:\\Users\\micha\\projects\\alchellmy\\Alchellmy.csproj",
+        "packagesPath": "C:\\Users\\micha\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\micha\\projects\\alchellmy\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Calvin\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\micha\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -32,6 +32,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -58,12 +63,30 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
+          "downloadDependencies": [
+            {
+              "name": "Microsoft.AspNetCore.App.Ref",
+              "version": "[6.0.32, 6.0.32]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Host.win-x64",
+              "version": "[6.0.32, 6.0.32]"
+            },
+            {
+              "name": "Microsoft.NETCore.App.Ref",
+              "version": "[6.0.32, 6.0.32]"
+            },
+            {
+              "name": "Microsoft.WindowsDesktop.App.Ref",
+              "version": "[6.0.32, 6.0.32]"
+            }
+          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.424\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.303\\RuntimeIdentifierGraph.json"
         }
       }
     }

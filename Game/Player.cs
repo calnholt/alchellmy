@@ -1,15 +1,5 @@
-#region File Description
-//-----------------------------------------------------------------------------
-// Player.cs
-//
-// Microsoft XNA Community Game Platform
-// Copyright (C) Microsoft Corporation. All rights reserved.
-//-----------------------------------------------------------------------------
-#endregion
-
 using System;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -166,11 +156,12 @@ namespace Platformer2D
     public void Update(
         GameTime gameTime,
         KeyboardState keyboardState,
-        GamePadState gamePadState)
+        GamePadState gamePadState,
+        Level level)
     {
       GetInput(keyboardState, gamePadState);
 
-      ApplyPhysics(gameTime);
+      ApplyPhysics(gameTime, level);
 
       if (IsAlive && IsOnGround)
       {
@@ -228,7 +219,7 @@ namespace Platformer2D
     /// <summary>
     /// Updates the player's velocity and position based on input, gravity, etc.
     /// </summary>
-    public void ApplyPhysics(GameTime gameTime)
+    public void ApplyPhysics(GameTime gameTime, Level level)
     {
       float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -237,9 +228,9 @@ namespace Platformer2D
       // Base velocity is a combination of horizontal movement control and
       // acceleration downward due to gravity.
       velocity.X += movement * MoveAcceleration * elapsed;
-      // velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
+      velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
 
-      // velocity.Y = DoJump(velocity.Y, gameTime);
+      velocity.Y = DoJump(velocity.Y, gameTime);
 
       // Apply pseudo-drag horizontally.
       if (IsOnGround)
@@ -255,7 +246,7 @@ namespace Platformer2D
       Position = new Vector2((float)Math.Round(Position.X), (float)Math.Round(Position.Y));
 
       // If the player is now colliding with the level, separate them.
-      HandleCollisions();
+      HandleCollisions(level);
 
       // If the collision stopped us from moving, reset the velocity to zero.
       if (Position.X == previousPosition.X)
@@ -270,10 +261,10 @@ namespace Platformer2D
     /// animates accordingly.
     /// </summary>
     /// <remarks>
-    /// During the accent of a jump, the Y velocity is completely
-    /// overridden by a power curve. During the decent, gravity takes
+    /// During the ascent of a jump, the Y velocity is completely
+    /// overridden by a power curve. During the descent, gravity takes
     /// over. The jump velocity is controlled by the jumpTime field
-    /// which measures time into the accent of the current jump.
+    /// which measures time into the ascent of the current jump.
     /// </remarks>
     /// <param name="velocityY">
     /// The player's current velocity along the Y axis.
@@ -293,7 +284,7 @@ namespace Platformer2D
           if (jumpTime == 0.0f)
             // jumpSound.Play();
 
-          jumpTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            jumpTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
           sprite.PlayAnimation(jumpAnimation);
         }
 
@@ -320,12 +311,12 @@ namespace Platformer2D
     }
 
     /// <summary>
-    /// Detects and resolves all collisions between the player and his neighboring
-    /// tiles. When a collision is detected, the player is pushed away along one
-    /// axis to prevent overlapping. There is some special logic for the Y axis to
-    /// handle platforms which behave differently depending on direction of movement.
+    /// Detects and resolves collisions between the player and the level's tiles.
     /// </summary>
-    private void HandleCollisions()
+    /// <param name="level">
+    /// The level.
+    /// </param>
+    private void HandleCollisions(Level level)
     {
       // Get the player's bounding rectangle and find neighboring tiles.
       Rectangle bounds = BoundingRectangle;
@@ -335,54 +326,54 @@ namespace Platformer2D
       int bottomTile = (int)Math.Ceiling(((float)bounds.Bottom / Tile.Height)) - 1;
 
       // Reset flag to search for ground collision.
-      isOnGround = true;
+      isOnGround = false;
 
       // For each potentially colliding tile,
-      // for (int y = topTile; y <= bottomTile; ++y)
-      // {
-      //   for (int x = leftTile; x <= rightTile; ++x)
-      //   {
-      //     // If this tile is collidable,
-      //     TileCollision collision = Level.GetCollision(x, y);
-      //     if (collision != TileCollision.Passable)
-      //     {
-      //       // Determine collision depth (with direction) and magnitude.
-      //       Rectangle tileBounds = Level.GetBounds(x, y);
-      //       Vector2 depth = RectangleExtensions.GetIntersectionDepth(bounds, tileBounds);
-      //       if (depth != Vector2.Zero)
-      //       {
-      //         float absDepthX = Math.Abs(depth.X);
-      //         float absDepthY = Math.Abs(depth.Y);
+      for (int y = topTile; y <= bottomTile; ++y)
+      {
+        for (int x = leftTile; x <= rightTile; ++x)
+        {
+          // If this tile is collidable,
+          TileCollision collision = level.GetCollision(x, y);
+          if (collision != TileCollision.Passable)
+          {
+            // Determine collision depth (with direction) and magnitude.
+            Rectangle tileBounds = level.GetBounds(x, y);
+            Vector2 depth = RectangleExtensions.GetIntersectionDepth(bounds, tileBounds);
+            if (depth != Vector2.Zero)
+            {
+              float absDepthX = Math.Abs(depth.X);
+              float absDepthY = Math.Abs(depth.Y);
 
-      //         // Resolve the collision along the shallow axis.
-      //         if (absDepthY < absDepthX || collision == TileCollision.Platform)
-      //         {
-      //           // If we crossed the top of a tile, we are on the ground.
-      //           if (previousBottom <= tileBounds.Top)
-      //             isOnGround = true;
+              // Resolve the collision along the shallow axis.
+              if (absDepthY < absDepthX || collision == TileCollision.Platform)
+              {
+                // If we crossed the top of a tile, we are on the ground.
+                if (previousBottom <= tileBounds.Top)
+                  isOnGround = true;
 
-      //           // Ignore platforms, unless we are on the ground.
-      //           if (collision == TileCollision.Impassable || IsOnGround)
-      //           {
-      //             // Resolve the collision along the Y axis.
-      //             Position = new Vector2(Position.X, Position.Y + depth.Y);
+                // Ignore platforms, unless we are on the ground.
+                if (collision == TileCollision.Impassable || IsOnGround)
+                {
+                  // Resolve the collision along the Y axis.
+                  Position = new Vector2(Position.X, Position.Y + depth.Y);
 
-      //             // Perform further collisions with the new bounds.
-      //             bounds = BoundingRectangle;
-      //           }
-      //         }
-      //         else if (collision == TileCollision.Impassable) // Ignore platforms.
-      //         {
-      //           // Resolve the collision along the X axis.
-      //           Position = new Vector2(Position.X + depth.X, Position.Y);
+                  // Perform further collisions with the new bounds.
+                  bounds = BoundingRectangle;
+                }
+              }
+              else if (collision == TileCollision.Impassable)
+              {
+                // Resolve the collision along the X axis.
+                Position = new Vector2(Position.X + depth.X, Position.Y);
 
-      //           // Perform further collisions with the new bounds.
-      //           bounds = BoundingRectangle;
-      //         }
-      //       }
-      //     }
-      //   }
-      // }
+                // Perform further collisions with the new bounds.
+                bounds = BoundingRectangle;
+              }
+            }
+          }
+        }
+      }
 
       // Save the new bounds bottom.
       previousBottom = bounds.Bottom;

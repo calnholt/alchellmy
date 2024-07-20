@@ -4,13 +4,19 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Celebrate.png</File>
-    <File>C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Die.png</File>
-    <File>C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Idle.png</File>
-    <File>C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Jump.png</File>
-    <File>C:/Users/Calvin/Documents/Alchellmy/Content/Sprites/Player/Run.png</File>
+    <File>c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Celebrate.png</File>
+    <File>c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Die.png</File>
+    <File>c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Idle.png</File>
+    <File>c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Jump.png</File>
+    <File>c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Run.png</File>
+    <File>c:/Users/micha/projects/alchellmy/Content/Tiles/Impassable.png</File>
+    <File>c:/Users/micha/projects/alchellmy/Content/Tiles/Passable.png</File>
+    <File>c:/Users/micha/projects/alchellmy/Content/Tiles/Platform.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
