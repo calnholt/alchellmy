@@ -1,9 +1,0 @@
-Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Celebrate.png","c:/Users/micha/projects/alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Celebrate.xnb","TextureProcessor","Texture2DContent",37037,180309,0.1011439
-"c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Die.png","c:/Users/micha/projects/alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Die.xnb","TextureProcessor","Texture2DContent",35621,180309,0.00877
-"c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Idle.png","c:/Users/micha/projects/alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Idle.xnb","TextureProcessor","Texture2DContent",6776,16469,0.0021976
-"c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Jump.png","c:/Users/micha/projects/alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Jump.xnb","TextureProcessor","Texture2DContent",35302,180309,0.0055901
-"c:/Users/micha/projects/alchellmy/Content/Sprites/Player/Run.png","c:/Users/micha/projects/alchellmy/Content/bin/DesktopGL/Content/Sprites/Player/Run.xnb","TextureProcessor","Texture2DContent",37247,163925,0.0068093
-"c:/Users/micha/projects/alchellmy/Content/Tiles/Impassable.png","c:/Users/micha/projects/alchellmy/Content/bin/DesktopGL/Content/Tiles/Impassable.xnb","TextureProcessor","Texture2DContent",493,16469,0.0920695
-"c:/Users/micha/projects/alchellmy/Content/Tiles/Passable.png","c:/Users/micha/projects/alchellmy/Content/bin/DesktopGL/Content/Tiles/Passable.xnb","TextureProcessor","Texture2DContent",162,16469,0.0039274
-"c:/Users/micha/projects/alchellmy/Content/Tiles/Platform.png","c:/Users/micha/projects/alchellmy/Content/bin/DesktopGL/Content/Tiles/Platform.xnb","TextureProcessor","Texture2DContent",534,16469,0.0912712
