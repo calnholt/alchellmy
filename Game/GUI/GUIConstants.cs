@@ -1,4 +1,4 @@
-﻿namespace Platformer2D;
+﻿namespace Alchellmy;
 
 public static class GUIConstants
 {

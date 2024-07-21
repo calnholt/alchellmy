@@ -9,7 +9,7 @@
 
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Platformer2D
+namespace Alchellmy
 {
   /// <summary>
   /// Represents an animated texture.

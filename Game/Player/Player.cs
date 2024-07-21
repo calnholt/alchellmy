@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Platformer2D
+namespace Alchellmy
 {
   /// <summary>
   /// Our fearless adventurer!

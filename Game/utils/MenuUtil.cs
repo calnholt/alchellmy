@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework.Input;
 
-namespace Platformer2D 
+namespace Alchellmy 
 {
   static class MenuUtil
   {

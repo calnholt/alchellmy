@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace Platformer2D
+namespace Alchellmy
 {
     public class MenuButton
     {
