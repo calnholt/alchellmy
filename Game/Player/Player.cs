@@ -174,6 +174,9 @@ namespace Platformer2D
 
       if (IsAlive && IsOnGround)
       {
+        if (_dashState.State == DashStateEnum.PreventDash) {
+          _dashState.State = DashStateEnum.NotDashing;
+        }
         if (Math.Abs(Velocity.X) - 0.02f > 0)
         {
           sprite.PlayAnimation(runAnimation);

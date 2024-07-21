@@ -55,7 +55,7 @@ public struct DashState
     {
       return gamePadState.IsButtonUp(Buttons.RightShoulder);
     }
-    if (BtnKey == (int)Buttons.RightShoulder)
+    if (BtnKey == (int)Keys.J)
     {
       return keyboardState.IsKeyUp(Keys.J);
     }
