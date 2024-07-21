@@ -16,17 +16,12 @@ public struct DashState
   public const float COOLDOWN_DURATION = 0.15f;
   public const float VELOCITY = 200.0f;
   public const int BUTTON_UP = (int)Buttons.None;
-  public DashStateEnum State;
+  public DashStateEnum State = DashStateEnum.NotDashing;
   public float Time = 0.0f;
   public float CooldownTime = COOLDOWN_DURATION;
   public int BtnKey = BUTTON_UP;
 
-  public DashState()
-  {
-    State = DashStateEnum.NotDashing;
-    Time = 0.0f;
-
-  }
+  public DashState() { }
   public bool IsInput(KeyboardState keyboardState, GamePadState gamePadState)
   {
     if (State == DashStateEnum.PreventDash) return false;
