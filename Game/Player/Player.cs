@@ -248,14 +248,14 @@ namespace Platformer2D
       float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
       Vector2 previousPosition = Position;
 
-      // Base velocity is a combination of horizontal movement control and
-      // acceleration downward due to gravity.
       if (_dashState.IsDashing())
       {
         velocity.X = DoDash(gameTime);
       }
       else
       {
+      // Base velocity is a combination of horizontal movement control and
+      // acceleration downward due to gravity.
         velocity.X += movement * MoveAcceleration * elapsed;
         velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
         velocity.Y = DoJump(velocity.Y, gameTime);
@@ -444,7 +444,7 @@ namespace Platformer2D
         flip = SpriteEffects.None;
 
       // Draw that sprite.
-      sprite.Draw(gameTime, spriteBatch, Position, flip);
+      sprite.Draw(gameTime, spriteBatch, Position, flip, _dashState.IsDashing() ? Color.Black : Color.White);
     }
   }
 }
