@@ -7,6 +7,7 @@ public enum DashStateEnum
   NotDashing,
   GroundDashing,
   MidairDashing,
+  PreventDash,
 }
 
 public struct DashState
@@ -24,11 +25,12 @@ public struct DashState
   {
     State = DashStateEnum.NotDashing;
     Time = 0.0f;
-    
+
   }
   public bool IsInput(KeyboardState keyboardState, GamePadState gamePadState)
   {
-    return CooldownTime >= COOLDOWN_DURATION && 
+    if (State == DashStateEnum.PreventDash) return false;
+    return CooldownTime >= COOLDOWN_DURATION &&
         (
             gamePadState.IsButtonDown(Buttons.RightShoulder) ||
             keyboardState.IsKeyDown(Keys.J)
@@ -39,20 +41,22 @@ public struct DashState
 
   public readonly bool IsDashing()
   {
-    return State == DashStateEnum.GroundDashing || 
+    return State == DashStateEnum.GroundDashing ||
         State == DashStateEnum.MidairDashing;
   }
 
-  public bool IsUpdateCooldown() 
+  public bool IsUpdateCooldown()
   {
     return CooldownTime < COOLDOWN_DURATION && !IsDashing();
   }
-  public bool IsDashInputUp(KeyboardState keyboardState, GamePadState gamePadState) 
+  public bool IsDashInputUp(KeyboardState keyboardState, GamePadState gamePadState)
   {
-    if (BtnKey == (int)Buttons.RightShoulder) {
+    if (BtnKey == (int)Buttons.RightShoulder)
+    {
       return gamePadState.IsButtonUp(Buttons.RightShoulder);
     }
-    if (BtnKey == (int)Buttons.RightShoulder) {
+    if (BtnKey == (int)Buttons.RightShoulder)
+    {
       return keyboardState.IsKeyUp(Keys.J);
     }
     return false;

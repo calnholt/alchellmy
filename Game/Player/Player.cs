@@ -193,11 +193,13 @@ namespace Platformer2D
         GamePadState gamePadState)
     {
       bool isDashingInput = _dashState.IsInput(keyboardState, gamePadState);
-      if (isDashingInput) {
+      if (isDashingInput)
+      {
         _dashState.State = IsOnGround ? DashStateEnum.GroundDashing : DashStateEnum.MidairDashing;
         _dashState.BtnKey = gamePadState.IsButtonDown(Buttons.RightShoulder) ? (int)Buttons.RightShoulder : (int)Keys.J;
       }
-      else {
+      else
+      {
         // Get analog horizontal movement.
         movement = gamePadState.ThumbSticks.Left.X * MoveStickScale;
 
@@ -221,7 +223,8 @@ namespace Platformer2D
         }
       }
 
-      if (_dashState.IsDashInputUp(keyboardState, gamePadState)) {
+      if (_dashState.IsDashInputUp(keyboardState, gamePadState))
+      {
         _dashState.BtnKey = DashState.BUTTON_UP;
       }
 
@@ -244,13 +247,13 @@ namespace Platformer2D
 
       // Base velocity is a combination of horizontal movement control and
       // acceleration downward due to gravity.
-      if (_dashState.IsDashing()) 
+      if (_dashState.IsDashing())
       {
         velocity.X = DoDash(gameTime);
       }
-      else 
+      else
       {
-      velocity.X += movement * MoveAcceleration * elapsed;
+        velocity.X += movement * MoveAcceleration * elapsed;
         velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
         velocity.Y = DoJump(velocity.Y, gameTime);
 
@@ -266,7 +269,8 @@ namespace Platformer2D
 
       // Apply velocity.
       position.X += velocity.X * elapsed;
-      if (!_dashState.IsDashing()) {
+      if (!_dashState.IsDashing())
+      {
         position.Y += velocity.Y * elapsed;
       }
       Position = new Vector2((float)Math.Round(Position.X), (float)Math.Round(Position.Y));
@@ -278,7 +282,7 @@ namespace Platformer2D
       if (Position.X == previousPosition.X)
         velocity.X = 0;
 
-      if (Position.Y == previousPosition.Y) 
+      if (Position.Y == previousPosition.Y)
       {
         velocity.Y = 0;
         // cancel jump if overhead collision
@@ -312,7 +316,7 @@ namespace Platformer2D
         // Begin or continue a jump
         if ((!wasJumping && IsOnGround) || jumpTime > 0.0f)
         {
-          if (jumpTime == 0.0f) 
+          if (jumpTime == 0.0f)
           {
             // jumpSound.Play();
           }
@@ -342,11 +346,12 @@ namespace Platformer2D
       return velocityY;
     }
 
-    private float DoDash(GameTime gameTime) {
+    private float DoDash(GameTime gameTime)
+    {
       _dashState.Time += (float)gameTime.ElapsedGameTime.TotalSeconds;
-      if (_dashState.Time >= DashState.DURATION) 
+      if (_dashState.Time >= DashState.DURATION)
       {
-        _dashState.State = DashStateEnum.NotDashing;
+        _dashState.State = _dashState.State == DashStateEnum.MidairDashing ? DashStateEnum.PreventDash : DashStateEnum.NotDashing;
         _dashState.Time = 0.0f;
         _dashState.CooldownTime = 0.0f;
         return velocity.X;
