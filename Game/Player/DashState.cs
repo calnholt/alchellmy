@@ -44,7 +44,7 @@ public struct DashState
   {
     return CooldownTime < COOLDOWN_DURATION && !IsDashing();
   }
-  public bool IsDashInputUp(KeyboardState keyboardState, GamePadState gamePadState)
+  public bool IsInputUp(KeyboardState keyboardState, GamePadState gamePadState)
   {
     if (BtnKey == (int)Buttons.RightShoulder)
     {

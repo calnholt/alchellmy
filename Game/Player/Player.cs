@@ -56,16 +56,13 @@ namespace Platformer2D
     private const float GroundDragFactor = 0.48f;
     private const float AirDragFactor = 0.48f;
 
-    // Constants for controlling vertical movement
-    private const float MaxJumpTime = 0.7f;
-    private const float JumpLaunchVelocity = -2500.0f;
+    
     private const float GravityAcceleration = 2400.0f;
     private const float MaxFallSpeed = 550.0f;
-    private const float JumpControlPower = 0.14f;
 
     // Input configuration
     private const float MoveStickScale = 1.0f;
-    private const Buttons JumpButton = Buttons.A;
+    
 
     /// <summary>
     /// Gets whether or not the player's feet are on the ground.
@@ -82,10 +79,9 @@ namespace Platformer2D
     private float movement;
 
     // Jumping state
-    private bool isJumping;
-    private bool wasJumping;
-    private float jumpTime;
+
     private bool isFacingRight = true;
+    private JumpState _jumpState = new();
     private DashState _dashState = new();
 
     private Rectangle localBounds;
@@ -226,17 +222,11 @@ namespace Platformer2D
         }
       }
 
-      if (_dashState.IsDashInputUp(keyboardState, gamePadState))
+      _jumpState.IsJumping = _jumpState.IsInput(keyboardState, gamePadState);
+      if (_dashState.IsInputUp(keyboardState, gamePadState))
       {
         _dashState.BtnKey = DashState.BUTTON_UP;
       }
-
-      // Check if the player wants to jump.
-      isJumping =
-          gamePadState.IsButtonDown(JumpButton) ||
-          keyboardState.IsKeyDown(Keys.Space) ||
-          keyboardState.IsKeyDown(Keys.Up) ||
-          keyboardState.IsKeyDown(Keys.W);
 
     }
 
@@ -254,12 +244,11 @@ namespace Platformer2D
       }
       else
       {
-      // Base velocity is a combination of horizontal movement control and
-      // acceleration downward due to gravity.
+        // Base velocity is a combination of horizontal movement control and
+        // acceleration downward due to gravity.
         velocity.X += movement * MoveAcceleration * elapsed;
         velocity.Y = MathHelper.Clamp(velocity.Y + GravityAcceleration * elapsed, -MaxFallSpeed, MaxFallSpeed);
         velocity.Y = DoJump(velocity.Y, gameTime);
-
         // Apply pseudo-drag horizontally.
         if (IsOnGround)
           velocity.X *= GroundDragFactor;
@@ -289,8 +278,8 @@ namespace Platformer2D
       {
         velocity.Y = 0;
         // cancel jump if overhead collision
-        isJumping = false;
-        jumpTime = 0.0f;
+        _jumpState.JumpTime = 0.0f;
+        _jumpState.IsJumping = false;
       }
     }
 
@@ -314,37 +303,37 @@ namespace Platformer2D
     private float DoJump(float velocityY, GameTime gameTime)
     {
       // If the player wants to jump
-      if (isJumping && !_dashState.IsDashing())
+      if (_jumpState.IsJumping && !_dashState.IsDashing())
       {
         // Begin or continue a jump
-        if ((!wasJumping && IsOnGround) || jumpTime > 0.0f)
+        if ((!_jumpState.WasJumping && IsOnGround) || _jumpState.JumpTime > 0.0f)
         {
-          if (jumpTime == 0.0f)
+          if (_jumpState.JumpTime == 0.0f)
           {
             // jumpSound.Play();
           }
-          jumpTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
+          _jumpState.JumpTime += (float)gameTime.ElapsedGameTime.TotalSeconds;
           sprite.PlayAnimation(jumpAnimation);
         }
 
         // If we are in the ascent of the jump
-        if (0.0f < jumpTime && jumpTime <= MaxJumpTime)
+        if (0.0f < _jumpState.JumpTime && _jumpState.JumpTime <= JumpState.MaxJumpTime)
         {
           // Fully override the vertical velocity with a power curve that gives players more control over the top of the jump
-          velocityY = JumpLaunchVelocity * (1.0f - (float)Math.Pow(jumpTime / MaxJumpTime, JumpControlPower));
+          velocityY = JumpState.JumpLaunchVelocity * (1.0f - (float)Math.Pow(_jumpState.JumpTime / JumpState.MaxJumpTime, JumpState.JumpControlPower));
         }
         else
         {
           // Reached the apex of the jump
-          jumpTime = 0.0f;
+          _jumpState.JumpTime = 0.0f;
         }
       }
       else
       {
         // Continues not jumping or cancels a jump in progress
-        jumpTime = 0.0f;
+        _jumpState.JumpTime = 0.0f;
       }
-      wasJumping = isJumping;
+      _jumpState.WasJumping = _jumpState.IsJumping;
 
       return velocityY;
     }
